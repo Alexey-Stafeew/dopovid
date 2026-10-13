@@ -1,0 +1,424 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Доповідь Застосування</title>
+<meta name="theme-color" content="#14160f">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: одна колонка польової форми, групи-панелі, липка нижня панель з кнопкою «Скопіювати». Темна тема свідомо — використання вночі. */
+:root{
+  --bg:#14160f; --panel:#1c1f16; --field:#252a1d; --line:#353c2a;
+  --fg:#e7e6d8; --muted:#9a9d86; --accent:#e0a83a; --accent-ink:#1a1407;
+  --ok:#7fb069; --bad:#d9634c;
+  --f-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:16px;line-height:1.35;-webkit-tap-highlight-color:transparent}
+.wrap{max-width:560px;margin:0 auto;padding-inline:16px;padding-block:14px 120px;display:flex;flex-direction:column;gap:14px}
+header{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+h1{font-size:20px;margin:0;letter-spacing:.06em;font-weight:700}
+header small{color:var(--muted);font-size:12px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:12px}
+.ptitle{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.f{display:flex;flex-direction:column;gap:6px;min-width:0}
+label,.lbl{font-size:13px;color:var(--muted);font-weight:500}
+input,select,textarea{width:100%;font:inherit;color:var(--fg);background:var(--field);border:1px solid var(--line);border-radius:8px;padding:10px 11px;min-height:44px;outline:none}
+textarea{resize:vertical;min-height:70px}
+input:focus,select:focus,textarea:focus{border-color:var(--accent)}
+input::placeholder,textarea::placeholder{color:#6d715d}
+select:invalid,select.empty{color:#7d816b}
+.row{display:flex;gap:8px;align-items:stretch}
+.row>*{min-width:0}
+.grow{flex:1}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+button{font:inherit;cursor:pointer;border-radius:8px;min-height:44px;padding:0 12px;border:1px solid var(--line);background:var(--field);color:var(--fg);font-weight:600}
+button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+button:active{transform:translateY(1px)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{min-height:34px;padding:0 12px;border-radius:17px;font-weight:500;font-size:14px;background:transparent;color:var(--fg)}
+.seg{display:grid;gap:6px}
+.seg button{font-size:14px;padding:0 6px}
+.seg button.on,.tog.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.seg button.on.r-bad{background:var(--bad);border-color:var(--bad);color:#fff}
+.seg button.on.r-ok{background:var(--ok);border-color:var(--ok);color:#10180b}
+.tog{display:flex;align-items:center;justify-content:space-between;text-align:left;gap:8px}
+.tog .cal{font-family:var(--f-mono);font-size:12px;opacity:.75}
+.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums;letter-spacing:.04em}
+.time-row{display:grid;grid-template-columns:auto auto 1fr auto auto;gap:6px}
+.time-row button{padding:0 10px;font-family:var(--f-mono)}
+.time-row input{text-align:center;font-family:var(--f-mono);font-size:18px}
+.tstat{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--muted);min-height:28px}
+.tstat button{min-height:28px;font-size:12px;padding:0 10px}
+.dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--ok);margin-right:6px;vertical-align:1px}
+.fixed .dot{background:var(--accent)}
+.adk{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.pre{display:flex;align-items:center;gap:0}
+.pre span{font-family:var(--f-mono);color:var(--muted);padding:0 6px 0 0;font-size:15px}
+.cmp{min-height:34px;font-size:12px;padding:0 6px;display:flex;gap:4px;align-items:center;justify-content:center;font-weight:500}
+.cmp svg{width:14px;height:14px}
+.fixedword{background:transparent;border-style:dashed;color:var(--muted);display:flex;align-items:center;padding:0 11px;border:1px dashed var(--line);border-radius:8px;min-height:44px}
+.person{display:grid;grid-template-columns:110px 1fr 44px;gap:6px}
+.person button{padding:0;color:var(--bad)}
+.hint2{font-size:13px;color:var(--muted)}
+#duty .chip.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+#duty .chip{min-height:40px;font-size:15px}
+#duty .chip small{opacity:.7;margin-right:5px;font-size:12px}
+.addbtn{border-style:dashed;background:transparent;color:var(--muted);font-weight:500}
+pre.preview{margin:0;white-space:pre-wrap;word-break:break-word;font-family:var(--f-mono);font-size:13px;line-height:1.5;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:12px}
+.bar{position:fixed;left:0;right:0;bottom:0;padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px));background:linear-gradient(to top,var(--bg) 70%,transparent);display:flex;justify-content:center}
+.bar .in{max-width:560px;width:100%;display:grid;grid-template-columns:1fr 2.2fr;gap:8px}
+.copy{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-size:17px;min-height:52px;letter-spacing:.04em}
+.clear{min-height:52px;color:var(--muted)}
+.clear.arm{background:var(--bad);border-color:var(--bad);color:#fff}
+.toast{position:fixed;left:50%;top:calc(14px + env(safe-area-inset-top,0px));transform:translateX(-50%);background:var(--ok);color:#10180b;font-weight:600;padding:10px 16px;border-radius:8px;z-index:30;box-shadow:0 6px 20px #0008}
+.toast.err{background:var(--bad);color:#fff}
+/* Компас */
+.ov{position:fixed;inset:0;background:#0b0c08f2;z-index:20;display:flex;align-items:center;justify-content:center;padding:16px}
+.cbox{width:100%;max-width:380px;display:flex;flex-direction:column;gap:14px;align-items:center;text-align:center}
+.cbox h2{margin:0;font-size:15px;letter-spacing:.12em;color:var(--muted);text-transform:uppercase}
+.dial{position:relative;width:min(70vw,260px);aspect-ratio:1;max-width:100%}
+.dial canvas{width:100%;height:100%}
+.dial .tick{position:absolute;left:50%;top:-6px;transform:translateX(-50%);width:0;height:0;border-left:9px solid transparent;border-right:9px solid transparent;border-top:16px solid var(--accent)}
+.hd{font-family:var(--f-mono);font-size:64px;font-weight:600;font-variant-numeric:tabular-nums;line-height:1}
+.hint{color:var(--muted);font-size:14px;max-width:32ch}
+.cbtns{display:grid;grid-template-columns:1fr 1.6fr;gap:8px;width:100%}
+.cbtns .go{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);min-height:52px}
+.cerr{color:var(--bad);font-size:14px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap" id="app">
+  <header><h1>ЗАСТОСУВАННЯ</h1><small>доповідь</small></header>
+
+  <section class="panel">
+    <div class="ptitle">Підрозділ і місце</div>
+    <div class="g2">
+      <div class="f"><label for="unit">Підрозділ</label><input id="unit" data-k="unit" autocomplete="off" placeholder="Впишіть"></div>
+      <div class="f"><label for="callsign">Позивний</label><input id="callsign" data-k="callsign" autocomplete="off" placeholder="Впишіть"></div>
+    </div>
+    <div class="f"><label for="np">Н.П.</label><input id="np" data-k="np" autocomplete="off" placeholder="Впишіть"><div class="chips" id="np-h"></div></div>
+    <div class="f"><label for="oblast">Область</label><input id="oblast" data-k="oblast" autocomplete="off" placeholder="напр. Сумська"><div class="chips" id="oblast-h"></div></div>
+  </section>
+
+  <section class="panel" id="when">
+    <div class="ptitle">Дата і час</div>
+    <div class="row">
+      <button type="button" id="d-minus" aria-label="Попередній день">‹</button>
+      <input id="date" type="date" class="grow num">
+      <button type="button" id="d-plus" aria-label="Наступний день">›</button>
+    </div>
+    <div class="time-row">
+      <button type="button" data-m="-5">−5</button>
+      <button type="button" data-m="-1">−1</button>
+      <input id="time" type="time">
+      <button type="button" data-m="1">+1</button>
+      <button type="button" data-m="5">+5</button>
+    </div>
+    <div class="tstat" id="tstat"><span><i class="dot"></i><span id="tstat-t">Поточний час, оновлюється автоматично</span></span><button type="button" id="now" hidden>Зараз</button></div>
+  </section>
+
+  <section class="panel">
+    <div class="ptitle">Зброя</div>
+    <div class="g2">
+      <button type="button" class="tog" data-w="viktor"><span>ЗКУ Viktor</span><span class="cal">14.5</span></button>
+      <button type="button" class="tog" data-w="rifle"><span>Стрілецька</span><span class="cal">5.45</span></button>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="ptitle">Ціль</div>
+    <div class="g2">
+      <div class="f"><label for="target">№ цілі</label><input id="target" data-k="target" data-digits="4" inputmode="numeric" class="num" placeholder="0000"></div>
+      <div class="f" id="height-f"><label for="height">Висота</label><input id="height" data-k="height" data-digits="4" inputmode="numeric" class="num" placeholder="0000"></div>
+    </div>
+    <div class="f"><span class="lbl">Результат</span>
+      <div class="seg" id="result" style="grid-template-columns:1fr 1fr">
+        <button type="button" data-v="не застосовувалась">не застосовувалась</button>
+        <button type="button" data-v="не знищено" class="r-bad">не знищено</button>
+        <button type="button" data-v="ЗНИЩЕНО" class="r-ok">ЗНИЩЕНО</button>
+        <button type="button" data-v="вибух">вибух</button>
+      </div>
+    </div>
+    <div class="f" id="rozxid-f"><span class="lbl">Розхід</span>
+      <div class="row" id="am-viktor"><div class="fixedword grow">14,5х114 мм</div><input data-ak="viktor" data-digits="4" inputmode="numeric" class="num" style="max-width:120px" placeholder="К-сть"></div>
+      <div class="row" id="am-rifle"><div class="fixedword grow">5,45х39 мм</div><input data-ak="rifle" data-digits="4" inputmode="numeric" class="num" style="max-width:120px" placeholder="К-сть"></div>
+    </div>
+  </section>
+
+  <section class="panel" id="opys" hidden>
+    <div class="ptitle">Опис</div>
+    <div class="f" id="detect-f"><select id="detect" data-k="detect"><option value="" disabled selected hidden>Виявлено / не виявлено</option><option>акустично</option><option>візуально</option><option>акустично/візуально не виявлено</option></select></div>
+    <div class="adk" id="adk">
+      <div class="f"><div class="pre"><span>А-</span><input id="angle" data-k="angle" data-deg="1" inputmode="numeric" class="num" placeholder="360"></div><button type="button" class="cmp" data-c="angle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/></svg>компас</button></div>
+      <div class="f"><div class="pre"><span>Д-</span><input id="dist" data-k="dist" data-digits="5" inputmode="numeric" class="num" placeholder="00000"></div></div>
+      <div class="f" id="course-f"><div class="pre"><span>К-</span><input id="course" data-k="course" data-deg="1" inputmode="numeric" class="num" placeholder="360"></div><button type="button" class="cmp" data-c="course"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/></svg>компас</button></div>
+    </div>
+    <div id="hit-f" class="g3">
+      <div class="fixedword" id="actword">обстріляно</div>
+      <select id="action" data-k="action"><option value="" disabled selected hidden>Дія</option><option>обстріляно</option><option>знищено</option></select>
+      <select id="count" data-k="count"><option value="" disabled selected hidden>Кільк.</option></select>
+      <div class="seg" id="cls" style="grid-template-columns:1fr 1fr"><button type="button" data-v="БПЛА">БПЛА</button><button type="button" data-v="КР">КР</button></div>
+    </div>
+    <select id="uav" data-k="uav"><option value="" disabled selected hidden>Тип БПЛА</option></select>
+    <div id="expl-f" class="f">
+      <div class="g3"><div class="fixedword">вибух</div><select id="explCount" data-k="explCount"><option value="" disabled selected hidden>Кільк.</option></select><select id="explPlace" data-k="explPlace"><option value="" disabled selected hidden>Місце</option><option>на землі</option><option>у повітрі</option></select></div>
+      <input id="explStatus" data-k="explStatus" maxlength="64" placeholder="Стан справ на ОКІ">
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="f"><label for="comment">Коментар</label><textarea id="comment" data-k="comment" rows="2" placeholder="Додаткові відомості..."></textarea></div>
+  </section>
+
+  <section class="panel">
+    <div class="row" style="align-items:center;justify-content:space-between"><div class="ptitle">Хто на БЧ</div><button type="button" class="chip" id="editos">Список ОС</button></div>
+    <div class="chips" id="duty"></div>
+    <div class="hint2" id="duty-empty">Список особового складу порожній. Натисніть «Список ОС» і впишіть усіх.</div>
+    <div id="roster-ed" class="f" hidden>
+      <div class="lbl">Весь особовий склад (зберігається на телефоні)</div>
+      <div id="people" class="f"></div>
+      <button type="button" class="addbtn" id="addp">+ Додати військовослужбовця</button>
+      <button type="button" id="doneos">Готово</button>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="ptitle">Попередній перегляд</div>
+    <pre class="preview" id="preview"></pre>
+  </section>
+</div>
+
+<div class="bar"><div class="in"><button type="button" class="clear" id="clear">Очистити</button><button type="button" class="copy" id="copy">Скопіювати</button></div></div>
+
+<div class="ov" id="ov" hidden>
+  <div class="cbox">
+    <h2 id="c-title">Азимут</h2>
+    <div class="dial"><canvas id="dial" width="520" height="520"></canvas><div class="tick"></div></div>
+    <div class="hd" id="c-val">---</div>
+    <div class="hint" id="c-hint"></div>
+    <div class="cerr" id="c-err" hidden></div>
+    <div class="cbtns"><button type="button" id="c-cancel">Скасувати</button><button type="button" class="go" id="c-ok">Записати</button></div>
+  </div>
+</div>
+
+<script>
+(function(){
+const KEY='zast_v1', HKEY='zast_hist_v1';
+const UAV=['Герань','Герань (реактивний)','Гербера','Пародія','Ланцет','Бандероль','Невідомий'];
+const RANKS=['солд.','ст. солд.','мол. с-нт','с-нт','ст. с-нт','гол. с-нт','шт. с-нт','м. с-нт','мол. л-т','л-т','ст. л-т','к-н','м-р','п.п-к','п-к'];
+const W={viktor:{name:'із ЗКУ Viktor MR-2 14.5',ammo:'Набій 14,5х114 мм (ЗПУ, КПВТ)'},rifle:{name:'зі стрілецької зброї 5.45/5.56',ammo:'Набій 5,45х39 мм'}};
+const KEEP=['unit','callsign','np','oblast','weapons','roster','duty'];
+const blank=()=>({unit:'',callsign:'',np:'',oblast:'',weapons:{viktor:true,rifle:false},target:'',height:'',result:'',angle:'',dist:'',course:'',action:'',count:'',cls:'',uav:'',detect:'',ammo:{viktor:'',rifle:''},explCount:'',explPlace:'',explStatus:'',comment:'',roster:[],duty:[]});
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+
+function load(k,d){try{const v=JSON.parse(localStorage.getItem(k));return v||d}catch(e){return d}}
+function store(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+let s=Object.assign(blank(),load(KEY,{}));
+s.weapons=Object.assign({viktor:false,rifle:false},s.weapons);s.ammo=Object.assign({viktor:'',rifle:''},s.ammo);
+if(!Array.isArray(s.roster))s.roster=[];if(!Array.isArray(s.duty))s.duty=[];
+if(Array.isArray(s.personnel)){s.personnel.filter(p=>p&&p.pib&&p.pib.trim()).forEach(p=>{const id=uid();s.roster.push({id,rank:p.rank||'',pib:p.pib.trim()});s.duty.push(id);});delete s.personnel;}
+let hist=Object.assign({np:[],oblast:[]},load(HKEY,{}));
+const save=()=>store(KEY,s);
+const $=id=>document.getElementById(id);
+
+// ---- селекти
+const fill=(el,arr)=>arr.forEach(v=>{const o=document.createElement('option');o.textContent=v;o.value=v;el.appendChild(o)});
+const n9=[1,2,3,4,5,6,7,8,9].map(String);
+fill($('count'),n9);fill($('explCount'),n9);fill($('uav'),UAV);
+
+// ---- дата/час
+let fixed=null; // Date, якщо скориговано вручну
+const pad=n=>String(n).padStart(2,'0');
+const cur=()=>fixed?new Date(fixed):new Date();
+function showDT(){const d=cur();$('date').value=d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());$('time').value=pad(d.getHours())+':'+pad(d.getMinutes());
+  $('when').classList.toggle('fixed',!!fixed);$('now').hidden=!fixed;$('tstat-t').textContent=fixed?'Скориговано вручну':'Поточний час, оновлюється автоматично';}
+function shift(min){const d=cur();d.setSeconds(0,0);d.setMinutes(d.getMinutes()+min);fixed=d;showDT();update();}
+document.querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>shift(+b.dataset.m));
+$('d-minus').onclick=()=>shift(-1440);$('d-plus').onclick=()=>shift(1440);
+$('now').onclick=()=>{fixed=null;showDT();update();};
+function fromInputs(){const dv=$('date').value,tv=$('time').value;if(!dv||!tv)return;const [y,m,d]=dv.split('-').map(Number),[h,mi]=tv.split(':').map(Number);fixed=new Date(y,m-1,d,h,mi);showDT();update();}
+$('date').onchange=fromInputs;$('time').onchange=fromInputs;
+setInterval(()=>{if(!fixed&&document.activeElement!==$('time')&&document.activeElement!==$('date')){showDT();update();}},10000);
+
+// ---- поля
+function cleanVal(el){let v=el.value;
+  if(el.dataset.digits){v=v.replace(/\D/g,'').slice(0,+el.dataset.digits)}
+  if(el.dataset.deg){v=v.replace(/\D/g,'').slice(0,3);if(v!==''){let n=Math.min(360,+v);v=n?String(n):''}}
+  if(el.id==='np')v=v.replace(/[^а-яА-ЯіІїЇєЄґҐ' \-]/g,'').toLocaleUpperCase('uk-UA');
+  if(el.id==='callsign'&&v)v=v.charAt(0).toLocaleUpperCase('uk-UA')+v.slice(1);
+  if(v!==el.value)el.value=v;return v;}
+document.querySelectorAll('[data-k]').forEach(el=>{
+  el.value=s[el.dataset.k]||'';
+  const h=()=>{s[el.dataset.k]=cleanVal(el);if(el.id==='uav'||el.tagName==='SELECT')el.classList.toggle('empty',!el.value);save();update();};
+  el.addEventListener('input',h);el.addEventListener('change',h);
+});
+document.querySelectorAll('[data-ak]').forEach(el=>{el.value=s.ammo[el.dataset.ak]||'';el.addEventListener('input',()=>{s.ammo[el.dataset.ak]=cleanVal(el);save();update();});});
+
+// історія Н.П./області
+function renderHist(k){const box=$(k+'-h');box.innerHTML='';hist[k].forEach(v=>{const b=document.createElement('button');b.type='button';b.className='chip';b.textContent=v;b.onclick=()=>{s[k]=v;$(k).value=v;save();update();};box.appendChild(b);});box.hidden=!hist[k].length;}
+function pushHist(k){const v=(s[k]||'').trim();if(!v)return;hist[k]=[v].concat(hist[k].filter(x=>x!==v)).slice(0,3);store(HKEY,hist);renderHist(k);}
+renderHist('np');renderHist('oblast');
+
+// зброя
+document.querySelectorAll('[data-w]').forEach(b=>b.onclick=()=>{s.weapons[b.dataset.w]=!s.weapons[b.dataset.w];save();update();});
+// результат
+document.querySelectorAll('#result button').forEach(b=>b.onclick=()=>{s.result=s.result===b.dataset.v?'':b.dataset.v;if(s.result==='вибух'){s.height='';s.course='';$('height').value='';$('course').value='';}save();update();});
+// клас
+document.querySelectorAll('#cls button').forEach(b=>b.onclick=()=>{s.cls=s.cls===b.dataset.v?'':b.dataset.v;if(s.cls==='КР')s.uav='';else if(s.cls==='БПЛА'&&!s.uav)s.uav=UAV[0];$('uav').value=s.uav;save();update();});
+
+// особовий склад: весь список + вибір хто на БЧ
+function renderDuty(){const box=$('duty');box.innerHTML='';
+  const list=s.roster.filter(p=>p.pib&&p.pib.trim());
+  list.forEach(p=>{const b=document.createElement('button');b.type='button';b.className='chip'+(s.duty.includes(p.id)?' on':'');
+    if(p.rank){const sm=document.createElement('small');sm.textContent=p.rank;b.appendChild(sm);}
+    b.appendChild(document.createTextNode(p.pib.trim()));
+    b.onclick=()=>{s.duty=s.duty.includes(p.id)?s.duty.filter(x=>x!==p.id):s.duty.concat(p.id);save();renderDuty();update();};
+    box.appendChild(b);});
+  $('duty-empty').hidden=!!list.length;}
+$('editos').onclick=()=>{const ed=$('roster-ed');ed.hidden=!ed.hidden;if(!ed.hidden&&!s.roster.length){s.roster.push({id:uid(),rank:'',pib:''});renderPeople();}};
+$('doneos').onclick=()=>{s.roster=s.roster.filter(p=>p.pib&&p.pib.trim());s.duty=s.duty.filter(id=>s.roster.some(p=>p.id===id));save();renderPeople();$('roster-ed').hidden=true;renderDuty();update();};
+function renderPeople(){const box=$('people');box.innerHTML='';s.roster.forEach((p,i)=>{
+  const r=document.createElement('div');r.className='person';
+  const sel=document.createElement('select');sel.innerHTML='<option value="" disabled hidden>Звання</option>';fill(sel,RANKS);sel.value=p.rank||'';sel.classList.toggle('empty',!p.rank);sel.setAttribute('aria-label','Звання');
+  sel.onchange=()=>{p.rank=sel.value;sel.classList.remove('empty');save();renderDuty();update();};
+  const inp=document.createElement('input');inp.placeholder='Прізвище І.Б.';inp.value=p.pib||'';inp.setAttribute('aria-label','ПІБ');inp.oninput=()=>{p.pib=inp.value;save();renderDuty();update();};
+  const del=document.createElement('button');del.type='button';del.textContent='✕';del.setAttribute('aria-label','Видалити');
+  del.onclick=()=>{s.roster.splice(i,1);s.duty=s.duty.filter(id=>id!==p.id);save();renderPeople();renderDuty();update();};
+  r.append(sel,inp,del);box.appendChild(r);});}
+$('addp').onclick=()=>{s.roster.push({id:uid(),rank:'',pib:''});save();renderPeople();const ins=$('people').querySelectorAll('input');if(ins.length)ins[ins.length-1].focus();};
+renderPeople();renderDuty();
+
+// ---- стан відображення
+const notDet=()=>s.result==='не застосовувалась'&&s.detect==='акустично/візуально не виявлено';
+const showRozxid=()=>s.result!=='не застосовувалась'&&s.result!=='вибух';
+function update(){
+  document.querySelectorAll('[data-w]').forEach(b=>b.classList.toggle('on',!!s.weapons[b.dataset.w]));
+  document.querySelectorAll('#result button').forEach(b=>b.classList.toggle('on',s.result===b.dataset.v));
+  document.querySelectorAll('#cls button').forEach(b=>b.classList.toggle('on',s.cls===b.dataset.v));
+  const r=s.result,nd=notDet(),expl=r==='вибух',none=r==='не застосовувалась',hit=r==='не знищено'||r==='ЗНИЩЕНО';
+  $('height-f').hidden=nd;
+  $('rozxid-f').hidden=!showRozxid();
+  const anyW=s.weapons.viktor||s.weapons.rifle;
+  $('am-viktor').hidden=anyW&&!s.weapons.viktor;$('am-rifle').hidden=anyW&&!s.weapons.rifle;
+  $('opys').hidden=!r;
+  $('detect-f').hidden=!none;
+  $('adk').hidden=nd;$('course-f').hidden=expl;
+  $('adk').style.gridTemplateColumns=expl?'1fr 1fr':'';
+  $('hit-f').hidden=expl||nd;
+  $('actword').hidden=!hit;$('actword').textContent=r==='ЗНИЩЕНО'?'ЗНИЩЕНО':'обстріляно';
+  $('action').hidden=hit||none;
+  $('uav').hidden=expl||nd||s.cls!=='БПЛА';
+  $('expl-f').hidden=!expl;
+  document.querySelectorAll('select[data-k]').forEach(el=>el.classList.toggle('empty',!el.value));
+  $('preview').textContent=build();
+}
+
+// ---- текст доповіді (формат як в оригіналі)
+function build(fillDefaults){
+  const nd=notDet();let angle=s.angle,dist=s.dist,height=s.height,krok=s.course;
+  if(!nd){angle=angle||'0';dist=dist||'0';height=height||'0';krok=krok||'0';}
+  if(s.result==='вибух'&&s.explPlace==='на землі')height='0';
+  let tn=s.target||'0000';if(/^0+$/.test(tn))tn='б/н';
+  const d=cur(),date=pad(d.getDate())+'.'+pad(d.getMonth()+1)+'.'+d.getFullYear(),time=pad(d.getHours())+':'+pad(d.getMinutes());
+  const weapons=['viktor','rifle'].filter(k=>s.weapons[k]).map(k=>W[k].name).join(', ');
+  let t=`Дата: ${date}
+Час: ${time}
+№ цілі: ${tn}
+Результат: ${s.result||''}
+Н.П.: ${s.np||''}
+Обл.: ${s.oblast||''}
+Підрозділ: ${s.unit||''}
+Позивний: ${s.callsign||''}
+Зброя: ${weapons}`;
+  if(!nd)t+=`\nВисота: ${height}`;
+  const tail=()=>{let x='';if(s.count)x+=` ${s.count}`;if(s.cls)x+=` ${s.cls}`;if(s.cls==='БПЛА'&&s.uav)x+=` ${s.uav}`;return x;};
+  if(s.result==='вибух'){const w=Number(s.explCount)>1?'вибухи':'вибух';t+=`\nОпис: А-${angle}, Д-${dist} ${w} ${s.explCount} ${s.explPlace} ${s.explStatus}`;}
+  else if(s.result==='не застосовувалась'){
+    if(nd)t+=`\nОпис: ${s.detect}`;
+    else{t+=`\nОпис: А-${angle}, Д-${dist}, К-${krok}`;if(s.detect)t+=`, ${s.detect}`;t+=tail();}
+  }else{
+    t+=`\nОпис: А-${angle}, Д-${dist}, К-${krok}`;
+    if(s.result==='не знищено')t+=', обстріляно';else if(s.result==='ЗНИЩЕНО')t+=', ЗНИЩЕНО';else if(s.action)t+=`, ${s.action}`;
+    t+=tail();
+  }
+  const ps=s.roster.filter(p=>s.duty.includes(p.id)&&p.pib&&p.pib.trim()).map(p=>`${p.rank?p.rank+' ':''}${p.pib.trim()}`).join(', ');
+  if(ps)t+=`, ${ps}`;
+  t+=`\nКоментар: ${(s.comment||'').trim()||'-'}`;
+  if(showRozxid())['viktor','rifle'].forEach(k=>{const q=parseInt(s.ammo[k],10);if(!isNaN(q)&&(s.weapons[k]||!(s.weapons.viktor||s.weapons.rifle)))t+=`\n${W[k].ammo} - ${q}`;});
+  return t.split('\n').map(l=>l.trimStart()).join('\n');
+}
+
+// ---- копіювання
+function toast(msg,err){const el=document.createElement('div');el.className='toast'+(err?' err':'');el.textContent=msg;document.body.appendChild(el);setTimeout(()=>el.remove(),1800);}
+function fallbackCopy(text){const ta=document.createElement('textarea');ta.value=text;ta.setAttribute('readonly','');ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();ta.setSelectionRange(0,text.length);let ok=false;try{ok=document.execCommand('copy')}catch(e){}ta.remove();return ok;}
+$('copy').onclick=()=>{
+  if(!notDet()){['angle','dist','height','course'].forEach(k=>{if(!s[k]){s[k]='0';$(k==='course'?'course':k).value='0';}});}
+  if(!s.target){s.target='0000';$('target').value='0000';}
+  pushHist('np');pushHist('oblast');save();update();
+  const text=build();
+  const done=()=>toast('Доповідь скопійовано');
+  const fail=()=>{if(fallbackCopy(text))done();else{const r=document.createRange();r.selectNodeContents($('preview'));const sel=getSelection();sel.removeAllRanges();sel.addRange(r);toast('Текст виділено, скопіюйте вручну',true);}};
+  try{navigator.clipboard.writeText(text).then(done,fail)}catch(e){fail()}
+};
+
+// ---- очищення (двома натисками)
+let armT=null;
+$('clear').onclick=()=>{const b=$('clear');
+  if(!b.classList.contains('arm')){b.classList.add('arm');b.textContent='Точно?';armT=setTimeout(()=>{b.classList.remove('arm');b.textContent='Очистити';},3000);return;}
+  clearTimeout(armT);b.classList.remove('arm');b.textContent='Очистити';
+  const keep={};KEEP.forEach(k=>keep[k]=s[k]);s=Object.assign(blank(),keep);
+  document.querySelectorAll('[data-k]').forEach(el=>el.value=s[el.dataset.k]||'');
+  document.querySelectorAll('[data-ak]').forEach(el=>el.value='');
+  fixed=null;showDT();save();update();window.scrollTo({top:0,behavior:'smooth'});toast('Форму очищено');
+};
+
+// ---- компас
+let cField=null,heading=null,listening=false;
+const cv=$('dial'),cx=cv.getContext('2d');
+function drawDial(h){const W2=cv.width,c=W2/2,R=c-20;cx.clearRect(0,0,W2,W2);
+  const css=getComputedStyle(document.documentElement);
+  cx.save();cx.translate(c,c);cx.rotate(-(h||0)*Math.PI/180);
+  cx.strokeStyle=css.getPropertyValue('--line');cx.lineWidth=4;cx.beginPath();cx.arc(0,0,R,0,Math.PI*2);cx.stroke();
+  for(let a=0;a<360;a+=5){const big=a%30===0;cx.save();cx.rotate(a*Math.PI/180);cx.strokeStyle=big?css.getPropertyValue('--fg'):css.getPropertyValue('--muted');cx.lineWidth=big?4:2;cx.beginPath();cx.moveTo(0,-R);cx.lineTo(0,-R+(big?30:14));cx.stroke();
+    if(big){cx.fillStyle=a===0?css.getPropertyValue('--bad'):css.getPropertyValue('--fg');cx.font=(a%90===0?'600 40px ':'500 26px ')+'IBM Plex Mono, monospace';cx.textAlign='center';cx.textBaseline='middle';cx.fillText(a===0?'Пн':a===90?'Сх':a===180?'Пд':a===270?'Зх':String(a),0,-R+62);}
+    cx.restore();}
+  cx.restore();}
+function screenAngle(){return (screen.orientation&&screen.orientation.angle)||window.orientation||0;}
+function onOri(e){let h=null;
+  if(typeof e.webkitCompassHeading==='number')h=e.webkitCompassHeading;
+  else if(e.absolute&&typeof e.alpha==='number')h=360-e.alpha;
+  else if(e.type==='deviceorientationabsolute'&&typeof e.alpha==='number')h=360-e.alpha;
+  if(h===null)return;
+  h=(h+screenAngle()+360)%360;
+  heading=heading===null?h:smooth(heading,h);
+  $('c-val').textContent=String(Math.round(heading)%360||360).padStart(3,'0');drawDial(heading);$('c-err').hidden=true;}
+function smooth(a,b){let d=((b-a+540)%360)-180;return (a+d*0.25+360)%360;}
+function startListen(){if(listening)return;listening=true;
+  if('ondeviceorientationabsolute' in window)window.addEventListener('deviceorientationabsolute',onOri);
+  else window.addEventListener('deviceorientation',onOri);}
+function stopListen(){window.removeEventListener('deviceorientationabsolute',onOri);window.removeEventListener('deviceorientation',onOri);listening=false;}
+function noSensor(msg){const e=$('c-err');e.textContent=msg;e.hidden=false;}
+document.querySelectorAll('[data-c]').forEach(b=>b.onclick=async()=>{
+  cField=b.dataset.c;heading=null;$('c-val').textContent='---';drawDial(0);$('c-err').hidden=true;
+  $('c-title').textContent=cField==='angle'?'Азимут на ціль':'Курс цілі';
+  $('c-hint').textContent=cField==='angle'?'Тримайте телефон горизонтально і наведіть верхній край на ціль.':'Тримайте телефон горизонтально і наведіть верхній край у напрямку руху цілі.';
+  $('ov').hidden=false;
+  try{
+    if(typeof DeviceOrientationEvent!=='undefined'&&typeof DeviceOrientationEvent.requestPermission==='function'){
+      const p=await DeviceOrientationEvent.requestPermission();if(p!=='granted'){noSensor('Доступ до компаса не надано. Дозвольте «Рух і орієнтація» в налаштуваннях браузера.');return;}}
+    if(typeof DeviceOrientationEvent==='undefined'){noSensor('Цей браузер не дає доступу до компаса.');return;}
+    startListen();
+    setTimeout(()=>{if(heading===null&&!$('ov').hidden)noSensor('Немає даних компаса. Можливо, цей браузер або сторінка блокує датчики, або в пристрої немає магнітометра. Відкрийте сторінку напряму в Chrome/Safari.');},2500);
+  }catch(e){noSensor('Компас недоступний: '+(e&&e.message||e));}
+});
+const closeC=()=>{$('ov').hidden=true;stopListen();};
+$('c-cancel').onclick=closeC;
+$('c-ok').onclick=()=>{if(heading!==null){const v=String(Math.round(heading)%360||360);s[cField]=v;$(cField).value=v;save();update();}closeC();};
+
+showDT();update();
+})();
+</script>
+
+</body></html>
