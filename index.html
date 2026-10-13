@@ -1,9 +1,19 @@
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
 <title>Доповідь Застосування</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="Доповідь">
 <meta name="theme-color" content="#14160f">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
 <style>
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}[hidden]{display:none!important}
 /* Layout: одна колонка польової форми, групи-панелі, липка нижня панель з кнопкою «Скопіювати». Темна тема свідомо — використання вночі. */
 :root{
   --bg:#14160f; --panel:#1c1f16; --field:#252a1d; --line:#353c2a;
@@ -88,6 +98,8 @@ pre.preview{margin:0;white-space:pre-wrap;word-break:break-word;font-family:var(
 .cerr{color:var(--bad);font-size:14px}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
+</head>
+<body>
 
 <div class="wrap" id="app">
   <header><h1>ЗАСТОСУВАННЯ</h1><small>доповідь</small></header>
@@ -382,7 +394,7 @@ function drawDial(h){const W2=cv.width,c=W2/2,R=c-20;cx.clearRect(0,0,W2,W2);
   cx.save();cx.translate(c,c);cx.rotate(-(h||0)*Math.PI/180);
   cx.strokeStyle=css.getPropertyValue('--line');cx.lineWidth=4;cx.beginPath();cx.arc(0,0,R,0,Math.PI*2);cx.stroke();
   for(let a=0;a<360;a+=5){const big=a%30===0;cx.save();cx.rotate(a*Math.PI/180);cx.strokeStyle=big?css.getPropertyValue('--fg'):css.getPropertyValue('--muted');cx.lineWidth=big?4:2;cx.beginPath();cx.moveTo(0,-R);cx.lineTo(0,-R+(big?30:14));cx.stroke();
-    if(big){cx.fillStyle=a===0?css.getPropertyValue('--bad'):css.getPropertyValue('--fg');cx.font=(a%90===0?'600 40px ':'500 26px ')+'IBM Plex Mono, monospace';cx.textAlign='center';cx.textBaseline='middle';cx.fillText(a===0?'Пн':a===90?'Сх':a===180?'Пд':a===270?'Зх':String(a),0,-R+62);}
+    if(big){cx.fillStyle=a===0?css.getPropertyValue('--bad'):css.getPropertyValue('--fg');cx.font=(a%90===0?'600 40px ':'500 26px ')+'ui-monospace, Menlo, monospace';cx.textAlign='center';cx.textBaseline='middle';cx.fillText(a===0?'Пн':a===90?'Сх':a===180?'Пд':a===270?'Зх':String(a),0,-R+62);}
     cx.restore();}
   cx.restore();}
 function screenAngle(){return (screen.orientation&&screen.orientation.angle)||window.orientation||0;}
@@ -419,6 +431,8 @@ $('c-ok').onclick=()=>{if(heading!==null){const v=String(Math.round(heading)%360
 
 showDT();update();
 })();
+if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));}
 </script>
 
-</body></html>
+</body>
+</html>
