@@ -1,6 +1,6 @@
 // Офлайн-робота: сторінка береться з мережі, якщо є зв'язок (щоб отримувати оновлення),
 // інакше з кешу телефона.
-const CACHE = 'dopovid-v1';
+const CACHE = 'dopovid-v4';
 const FILES = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png', './icon-maskable-512.png'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES)).then(() => self.skipWaiting()));

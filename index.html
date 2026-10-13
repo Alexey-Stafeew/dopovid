@@ -71,6 +71,10 @@ button:active{transform:translateY(1px)}
 .fixedword{background:transparent;border-style:dashed;color:var(--muted);display:flex;align-items:center;padding:0 11px;border:1px dashed var(--line);border-radius:8px;min-height:44px}
 .person{display:grid;grid-template-columns:110px 1fr 44px;gap:6px}
 .person button{padding:0;color:var(--bad)}
+.hchip{display:inline-flex;border:1px solid var(--line);border-radius:17px;overflow:hidden}
+.hchip button{min-height:36px;border:0;border-radius:0;background:transparent;font-weight:500;font-size:14px}
+.hpick{padding:0 6px 0 12px;display:flex;align-items:center;font-size:14px}
+.hdel{padding:0 11px;color:var(--muted);border-left:1px solid var(--line)!important}
 .hint2{font-size:13px;color:var(--muted)}
 #duty .chip.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
 #duty .chip{min-height:40px;font-size:15px}
@@ -110,8 +114,8 @@ pre.preview{margin:0;white-space:pre-wrap;word-break:break-word;font-family:var(
       <div class="f"><label for="unit">Підрозділ</label><input id="unit" data-k="unit" autocomplete="off" placeholder="Впишіть"></div>
       <div class="f"><label for="callsign">Позивний</label><input id="callsign" data-k="callsign" autocomplete="off" placeholder="Впишіть"></div>
     </div>
-    <div class="f"><label for="np">Н.П.</label><input id="np" data-k="np" autocomplete="off" placeholder="Впишіть"><div class="chips" id="np-h"></div></div>
-    <div class="f"><label for="oblast">Область</label><input id="oblast" data-k="oblast" autocomplete="off" placeholder="напр. Сумська"><div class="chips" id="oblast-h"></div></div>
+    <div class="f"><div class="row" style="justify-content:space-between;align-items:center"><label for="np">Н.П.</label><button type="button" class="chip" id="np-ed" style="min-height:28px;font-size:12px">Змінити список</button></div><input id="np" data-k="np" autocomplete="off" placeholder="Впишіть"><div class="chips" id="np-h"></div></div>
+    <div class="f"><label for="oblast">Область</label><input id="oblast" data-k="oblast" autocomplete="off" placeholder="напр. Сумська"></div>
   </section>
 
   <section class="panel" id="when">
@@ -154,6 +158,7 @@ pre.preview{margin:0;white-space:pre-wrap;word-break:break-word;font-family:var(
       </div>
     </div>
     <div class="f" id="rozxid-f"><span class="lbl">Розхід</span>
+      <div class="hint2" id="am-none">Спершу оберіть зброю.</div>
       <div class="row" id="am-viktor"><div class="fixedword grow">14,5х114 мм</div><input data-ak="viktor" data-digits="4" inputmode="numeric" class="num" style="max-width:120px" placeholder="К-сть"></div>
       <div class="row" id="am-rifle"><div class="fixedword grow">5,45х39 мм</div><input data-ak="rifle" data-digits="4" inputmode="numeric" class="num" style="max-width:120px" placeholder="К-сть"></div>
     </div>
@@ -269,12 +274,14 @@ document.querySelectorAll('[data-k]').forEach(el=>{
 document.querySelectorAll('[data-ak]').forEach(el=>{el.value=s.ammo[el.dataset.ak]||'';el.addEventListener('input',()=>{s.ammo[el.dataset.ak]=cleanVal(el);save();update();});});
 
 // історія Н.П./області
-function renderHist(k){const box=$(k+'-h');box.innerHTML='';hist[k].forEach(v=>{const b=document.createElement('button');b.type='button';b.className='chip';b.textContent=v;b.onclick=()=>{s[k]=v;$(k).value=v;save();update();};box.appendChild(b);});box.hidden=!hist[k].length;}
+let histEdit=false;
+function renderHist(k){const box=$(k+'-h');box.innerHTML='';hist[k].forEach(v=>{if(!histEdit){const b=document.createElement('button');b.type='button';b.className='chip';b.textContent=v;b.onclick=()=>{s[k]=v;$(k).value=v;save();update();};box.appendChild(b);return;}const w=document.createElement('span');w.className='hchip';const t=document.createElement('span');t.className='hpick';t.textContent=v;const x=document.createElement('button');x.type='button';x.className='hdel';x.textContent='✕';x.setAttribute('aria-label','Видалити '+v);x.onclick=()=>{hist[k]=hist[k].filter(y=>y!==v);store(HKEY,hist);if(!hist[k].length)histEdit=false;renderHist(k);};w.append(t,x);box.appendChild(w);});if(histEdit){const d=document.createElement('button');d.type='button';d.className='chip';d.textContent='Готово';d.onclick=()=>{histEdit=false;renderHist(k);};box.appendChild(d);}box.hidden=!hist[k].length;$('np-ed').hidden=!hist[k].length||histEdit;}
+$('np-ed').onclick=()=>{histEdit=true;renderHist('np');};
 function pushHist(k){const v=(s[k]||'').trim();if(!v)return;hist[k]=[v].concat(hist[k].filter(x=>x!==v)).slice(0,3);store(HKEY,hist);renderHist(k);}
-renderHist('np');renderHist('oblast');
+renderHist('np');
 
 // зброя
-document.querySelectorAll('[data-w]').forEach(b=>b.onclick=()=>{s.weapons[b.dataset.w]=!s.weapons[b.dataset.w];save();update();});
+document.querySelectorAll('[data-w]').forEach(b=>b.onclick=()=>{const k=b.dataset.w;s.weapons[k]=!s.weapons[k];if(!s.weapons[k]){s.ammo[k]='';const el=document.querySelector('[data-ak="'+k+'"]');if(el)el.value='';}save();update();});
 // результат
 document.querySelectorAll('#result button').forEach(b=>b.onclick=()=>{s.result=s.result===b.dataset.v?'':b.dataset.v;if(s.result==='вибух'){s.height='';s.course='';$('height').value='';$('course').value='';}save();update();});
 // клас
@@ -313,7 +320,7 @@ function update(){
   $('height-f').hidden=nd;
   $('rozxid-f').hidden=!showRozxid();
   const anyW=s.weapons.viktor||s.weapons.rifle;
-  $('am-viktor').hidden=anyW&&!s.weapons.viktor;$('am-rifle').hidden=anyW&&!s.weapons.rifle;
+  $('am-viktor').hidden=!s.weapons.viktor;$('am-rifle').hidden=!s.weapons.rifle;$('am-none').hidden=anyW;
   $('opys').hidden=!r;
   $('detect-f').hidden=!none;
   $('adk').hidden=nd;$('course-f').hidden=expl;
@@ -358,7 +365,7 @@ function build(fillDefaults){
   const ps=s.roster.filter(p=>s.duty.includes(p.id)&&p.pib&&p.pib.trim()).map(p=>`${p.rank?p.rank+' ':''}${p.pib.trim()}`).join(', ');
   if(ps)t+=`, ${ps}`;
   t+=`\nКоментар: ${(s.comment||'').trim()||'-'}`;
-  if(showRozxid())['viktor','rifle'].forEach(k=>{const q=parseInt(s.ammo[k],10);if(!isNaN(q)&&(s.weapons[k]||!(s.weapons.viktor||s.weapons.rifle)))t+=`\n${W[k].ammo} - ${q}`;});
+  if(showRozxid())['viktor','rifle'].forEach(k=>{const q=parseInt(s.ammo[k],10);if(!isNaN(q)&&s.weapons[k])t+=`\n${W[k].ammo} - ${q}`;});
   return t.split('\n').map(l=>l.trimStart()).join('\n');
 }
 
@@ -368,7 +375,7 @@ function fallbackCopy(text){const ta=document.createElement('textarea');ta.value
 $('copy').onclick=()=>{
   if(!notDet()){['angle','dist','height','course'].forEach(k=>{if(!s[k]){s[k]='0';$(k==='course'?'course':k).value='0';}});}
   if(!s.target){s.target='0000';$('target').value='0000';}
-  pushHist('np');pushHist('oblast');save();update();
+  pushHist('np');save();update();
   const text=build();
   const done=()=>toast('Доповідь скопійовано');
   const fail=()=>{if(fallbackCopy(text))done();else{const r=document.createRange();r.selectNodeContents($('preview'));const sel=getSelection();sel.removeAllRanges();sel.addRange(r);toast('Текст виділено, скопіюйте вручну',true);}};
